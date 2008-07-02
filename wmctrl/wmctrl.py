@@ -43,3 +43,6 @@ def win_by_name_endswith(name):
 
 def win_by_role(role):
     return [win for win in winlist() if win.wm_window_role == role]
+
+def win_by_class(cls):
+    return [win for win in winlist() if win.wm_class == cls]
