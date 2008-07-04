@@ -4,6 +4,9 @@ from namedtuple import namedtuple
 
 Window = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role')
 
+def activate(win):
+    os.system('wmctrl -id -a %s' % win.id)
+
 def resize_and_move(win, x, y, w, h):
     mvarg = '0,%d,%d,%d,%d' % (x, y, w, h)
     os.system('wmctrl -i -r %s -e %s' % (win.id, mvarg))
