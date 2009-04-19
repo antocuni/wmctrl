@@ -49,3 +49,16 @@ def win_by_role(role):
 
 def win_by_class(cls):
     return [win for win in winlist() if win.wm_class == cls]
+
+def win_by_id(id):
+    return [win for win in winlist() if int(win.id, 16) == id]
+
+def get_active_window():
+    out = getoutput("xprop -root _NET_ACTIVE_WINDOW")
+    parts = out.split()
+    id = int(parts[-1], 16)
+    lst = win_by_id(id)
+    if not lst:
+        return None
+    assert len(lst) == 1
+    return lst[0]
