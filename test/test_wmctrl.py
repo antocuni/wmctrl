@@ -6,7 +6,7 @@ from wmctrl import Window
 class Xchild(object):
     cmd = None
     ARGS = []
-    sleep = 0.1
+    sleep = 0.5
 
     def __init__(self, *args):
         arglist = [self.CMD, '-name', self.NAME] + list(args)
