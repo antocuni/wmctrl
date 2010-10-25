@@ -1,6 +1,6 @@
 import os
 from commands import getoutput
-from namedtuple import namedtuple
+from collections import namedtuple
 
 BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role')
 
