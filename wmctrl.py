@@ -49,7 +49,10 @@ class Window(BaseWindow):
     def get_active(cls):
         out = getoutput("xprop -root _NET_ACTIVE_WINDOW")
         parts = out.split()
-        id = int(parts[-1], 16)
+        try:
+            id = int(parts[-1], 16)
+        except ValueError:
+            return None
         lst = cls.by_id(id)
         if not lst:
             return None
