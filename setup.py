@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='wmctrl',
-    version='0.1',
+    version='0.2',
     author='Antonio Cuni',
     author_email='anto.cuni@gmail.com',
     py_modules=['wmctrl'],
