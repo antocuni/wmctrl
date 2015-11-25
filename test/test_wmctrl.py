@@ -1,7 +1,7 @@
 import py
 import subprocess
 import time
-from wmctrl import Window
+#from wmctrl import Window
 
 class Xchild(object):
     cmd = None
@@ -26,7 +26,7 @@ class Apps:
         NAME = 'xfontsel-for-pytest'
 
 def get_win(name, *args):
-    get_app = getattr(Apps, 'get_%s' % name)        
+    get_app = getattr(Apps, 'get_%s' % name)
     xapp = get_app(*args)
     win = Window.by_name(get_app.NAME)
     return win[0], xapp
@@ -92,3 +92,12 @@ def test_geometry_negative():
     py.test.skip('fixme')
     check_geometry('100x200-30-40')
 
+def test_properties():
+    orig = Window.get_active()
+    orig.set_properties(("add","maximized_vert","maximized_horz"))
+    time.sleep(0.5)
+    orig.set_properties(("remove","maximized_vert","maximized_horz"))
+    time.sleep(0.5)
+    orig.set_properties(("toggle","fullscreen"))
+    time.sleep(0.5)
+    orig.set_properties(("toggle","fullscreen"))
