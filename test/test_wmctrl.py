@@ -92,12 +92,23 @@ def test_geometry_negative():
     py.test.skip('fixme')
     check_geometry('100x200-30-40')
 
+def get_geometry (w):
+    return (w.x, w.y, w.w, w.h)
+
 def test_properties():
     orig = Window.get_active()
-    orig.set_properties(("add","maximized_vert","maximized_horz"))
+    orig.set_properties(("toggle","maximized_vert","maximized_horz"))
+    curr = Window.get_active()
+    assert not (get_geometry(orig) == get_geometry(curr))
     time.sleep(0.5)
-    orig.set_properties(("remove","maximized_vert","maximized_horz"))
+    orig.set_properties(("toggle","maximized_vert","maximized_horz"))
+    curr = Window.get_active()
+    assert get_geometry(orig) == get_geometry(curr)
     time.sleep(0.5)
     orig.set_properties(("toggle","fullscreen"))
+    curr = Window.get_active()
+    assert not (get_geometry(orig) == get_geometry(curr))
     time.sleep(0.5)
     orig.set_properties(("toggle","fullscreen"))
+    curr = Window.get_active()
+    assert get_geometry(orig) == get_geometry(curr)
