@@ -5,7 +5,7 @@ try:
 except ImportError:
     from namedtuple import namedtuple
 
-BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role')
+BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role wm_state')
 
 class Window(BaseWindow):
 
@@ -14,10 +14,11 @@ class Window(BaseWindow):
         out = getoutput('wmctrl -l -G -p -x')
         windows = []
         for line in out.splitlines():
-            parts = line.split(None, len(Window._fields)-2)
+            parts = line.split(None, len(Window._fields)-3)
             parts = map(str.strip, parts)
             parts[1:7] = map(int, parts[1:7])
             parts.append(_wm_window_role(parts[0]))
+            parts.append(_wm_state(parts[0]))
             windows.append(cls(*parts))
         return windows
 
@@ -85,3 +86,19 @@ def _wm_window_role(winid):
         return ''
     else:
         return value.strip('"')
+
+def strip_prefix (prefix, word):
+    if word.startswith(prefix):
+        return word[len(prefix):]
+    return word
+
+def _wm_state (winid):
+    out = getoutput('xprop -id %s _NET_WM_STATE' % winid)
+    try:
+        _, value = out.split(' = ')
+    except ValueError:
+        # probably xprop returned an error
+        return []
+    else:
+        return [strip_prefix("_NET_WM_STATE_",s).lower()
+                for s in value.split(', ')]
