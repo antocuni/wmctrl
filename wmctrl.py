@@ -72,6 +72,10 @@ class Window(BaseWindow):
         x, y = map(int, pos.split('+'))
         self.resize_and_move(x, y, w, h)
 
+    def set_properties(self,properties):
+        proparg = ",".join(properties)
+        os.system('wmctrl -i -r %s -b %s' % (self.id,proparg))
+
 def _wm_window_role(winid):
     out = getoutput('xprop -id %s WM_WINDOW_ROLE' % winid)
     try:
@@ -81,4 +85,3 @@ def _wm_window_role(winid):
         return ''
     else:
         return value.strip('"')
-
