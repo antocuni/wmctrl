@@ -1,7 +1,7 @@
 import py
 import subprocess
 import time
-#from wmctrl import Window
+from wmctrl import Window
 
 class Xchild(object):
     cmd = None
