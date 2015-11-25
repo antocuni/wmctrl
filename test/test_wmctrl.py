@@ -96,19 +96,19 @@ def get_geometry (w):
     return (w.x, w.y, w.w, w.h)
 
 def test_properties():
-    orig = Window.get_active()
+    orig, xclock = get_win('xclock')
     orig.set_properties(("toggle","maximized_vert","maximized_horz"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert not (get_geometry(orig) == get_geometry(curr))
     time.sleep(0.5)
     orig.set_properties(("toggle","maximized_vert","maximized_horz"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert get_geometry(orig) == get_geometry(curr)
     time.sleep(0.5)
     orig.set_properties(("toggle","fullscreen"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert not (get_geometry(orig) == get_geometry(curr))
     time.sleep(0.5)
     orig.set_properties(("toggle","fullscreen"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert get_geometry(orig) == get_geometry(curr)
