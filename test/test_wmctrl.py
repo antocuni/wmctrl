@@ -102,26 +102,26 @@ def state_xor (prop, w1, w2):
     return xor(prop in w1.wm_state, prop in w2.wm_state)
 
 def test_properties():
-    orig = Window.get_active()
+    orig, xclock = get_win('xclock')
     orig.set_properties(("toggle","maximized_vert","maximized_horz"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert not (get_geometry(orig) == get_geometry(curr))
     assert state_xor("maximized_vert", curr, orig)
     assert state_xor("maximized_horz", curr, orig)
     time.sleep(0.5)
     orig.set_properties(("toggle","maximized_vert","maximized_horz"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert get_geometry(orig) == get_geometry(curr)
     assert not state_xor("maximized_vert", curr, orig)
     assert not state_xor("maximized_horz", curr, orig)
     time.sleep(0.5)
     orig.set_properties(("toggle","fullscreen"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert not (get_geometry(orig) == get_geometry(curr))
     assert state_xor("fullscreen", curr, orig)
     time.sleep(0.5)
     orig.set_properties(("toggle","fullscreen"))
-    curr = Window.get_active()
+    curr = Window.by_name(xclock.NAME)[0]
     assert get_geometry(orig) == get_geometry(curr)
     assert not state_xor("fullscreen", curr, orig)
     # restore the original maximized properties: fullscreen removes them
