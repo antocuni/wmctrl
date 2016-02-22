@@ -17,6 +17,8 @@ class Window(BaseWindow):
             parts = line.split(None, len(Window._fields)-3)
             parts = map(str.strip, parts)
             parts[1:7] = map(int, parts[1:7])
+            if len(parts) == 9: # title is missing
+                parts.append('')
             parts.append(_wm_window_role(parts[0]))
             parts.append(_wm_state(parts[0]))
             windows.append(cls(*parts))
