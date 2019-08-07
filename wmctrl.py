@@ -1,11 +1,25 @@
-import os
-from commands import getoutput
 try:
     from collections import namedtuple
 except ImportError:
     from namedtuple import namedtuple
 
+VERSBOSE = False
 BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role wm_state')
+
+def getoutput(s):
+    import commands
+    if VERSBOSE:
+        print s
+    return commands.getoutput(s)
+
+def system(s):
+    import os
+    if VERSBOSE:
+        print s
+    return os.system(s)
+
+def uniq(it):
+    return list(set(it))
 
 class Window(BaseWindow):
 
@@ -19,8 +33,24 @@ class Window(BaseWindow):
             parts[1:7] = map(int, parts[1:7])
             parts.append(_wm_window_role(parts[0]))
             parts.append(_wm_state(parts[0]))
+            ## parts.append('')
+            ## parts.append('')
+            if len(parts) != 12:
+                continue
             windows.append(cls(*parts))
         return windows
+
+    @classmethod
+    def list_classes(cls):
+        return uniq([w.wm_class for w in cls.list()])
+
+    @classmethod
+    def list_names(cls):
+        return uniq([w.name_class for w in cls.list()])
+
+    @classmethod
+    def list_roles(cls):
+        return uniq([w.wm_window_role for w in cls.list()])
 
     @classmethod
     def by_name(cls, name):
@@ -61,11 +91,25 @@ class Window(BaseWindow):
         return lst[0]
 
     def activate(self):
-        os.system('wmctrl -id -a %s' % self.id)
+        system('wmctrl -id -a %s' % self.id)
 
-    def resize_and_move(self, x, y, w, h):
+    def resize_and_move(self, x=None, y=None, w=None, h=None):
+        if x is None:
+            x = self.x
+        if y is None:
+            y = self.y
+        if w is None:
+            w = self.w
+        if h is None:
+            h = self.h
         mvarg = '0,%d,%d,%d,%d' % (x, y, w, h)
-        os.system('wmctrl -i -r %s -e %s' % (self.id, mvarg))
+        system('wmctrl -i -r %s -e %s' % (self.id, mvarg))
+
+    def resize(self, w=None, h=None):
+        self.resize_and_move(w=w, h=h)
+
+    def move(self, x=None, y=None):
+        self.resize_and_move(x=x, y=y)
 
     def set_geometry(self, geometry):
         dim, pos = geometry.split('+', 1)
@@ -75,7 +119,7 @@ class Window(BaseWindow):
 
     def set_properties(self,properties):
         proparg = ",".join(properties)
-        os.system('wmctrl -i -r %s -b %s' % (self.id,proparg))
+        system('wmctrl -i -r %s -b %s' % (self.id,proparg))
 
 def _wm_window_role(winid):
     out = getoutput('xprop -id %s WM_WINDOW_ROLE' % winid)
