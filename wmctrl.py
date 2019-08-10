@@ -1,9 +1,6 @@
-try:
-    from collections import namedtuple
-except ImportError:
-    from namedtuple import namedtuple
+from collections import namedtuple
 
-VERSBOSE = False
+VERSBOSE = True
 BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role wm_state')
 
 def getoutput(s):
