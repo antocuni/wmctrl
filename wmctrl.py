@@ -121,6 +121,13 @@ class Window(BaseWindow):
         proparg = ",".join(properties)
         system('wmctrl -i -r %s -b %s' % (self.id,proparg))
 
+    def set_decorations(self, v):
+        import gtk.gdk
+        w = gtk.gdk.window_foreign_new(int(self.id, 16))
+        w.set_decorations(v)
+        gtk.gdk.window_process_all_updates()
+        gtk.gdk.flush()
+
 def _wm_window_role(winid):
     out = getoutput('xprop -id %s WM_WINDOW_ROLE' % winid)
     try:
@@ -146,3 +153,10 @@ def _wm_state (winid):
     else:
         return [strip_prefix("_NET_WM_STATE_",s).lower()
                 for s in value.split(', ')]
+
+
+if __name__ == '__main__':
+    for w in Window.list():
+        print '{w.id:10s} {w.x:4d} {w.y:4d} {w.w:4d} {w.h:4d} {w.wm_name} - {w.wm_class} - {w.wm_window_role}'.format(w=w)
+
+    
