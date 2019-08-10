@@ -1,7 +1,7 @@
 from collections import namedtuple
+import attr
 
-VERSBOSE = True
-BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role wm_state')
+VERSBOSE = False
 
 def getoutput(s):
     import commands
@@ -15,24 +15,73 @@ def system(s):
         print s
     return os.system(s)
 
+def strip_prefix (prefix, word):
+    if word.startswith(prefix):
+        return word[len(prefix):]
+    return word
+
 def uniq(it):
     return list(set(it))
 
-class Window(BaseWindow):
+
+
+@attr.s
+class Window(object):
+    id = attr.ib()
+    desktop = attr.ib()
+    pid = attr.ib()
+    x = attr.ib()
+    y = attr.ib()
+    w = attr.ib()
+    h = attr.ib()
+    wm_class = attr.ib()
+    host = attr.ib()
+    wm_name = attr.ib()
+    _wm_window_role = attr.ib(default=None)
+    _wm_state = attr.ib(default=None)
+
+    @property
+    def wm_window_role(self):
+        if self._wm_window_role is not None:
+            return self._wm_window_role
+        #
+        out = getoutput('xprop -id %s WM_WINDOW_ROLE' % self.id)
+        try:
+            _, value = out.split(' = ')
+        except ValueError:
+            # probably xprop returned an error
+            self._wm_window_role = ''
+        else:
+            self._wm_window_role = value.strip('"')
+        return self._wm_window_role
+
+    @property
+    def wm_state (self):
+        if self._wm_state is not None:
+            return self._wm_state
+
+        out = getoutput('xprop -id %s _NET_WM_STATE' % self.id)
+        try:
+            _, value = out.split(' = ')
+        except ValueError:
+            # probably xprop returned an error
+            self._wm_state = []
+        else:
+            self._wm_state = [strip_prefix("_NET_WM_STATE_",s).lower()
+                              for s in value.split(', ')]
+        return self._wm_state
+
 
     @classmethod
     def list(cls):
         out = getoutput('wmctrl -l -G -p -x')
         windows = []
         for line in out.splitlines():
-            parts = line.split(None, len(Window._fields)-3)
+            parts = line.split(None, 9)
             parts = map(str.strip, parts)
             parts[1:7] = map(int, parts[1:7])
-            parts.append(_wm_window_role(parts[0]))
-            parts.append(_wm_state(parts[0]))
-            ## parts.append('')
-            ## parts.append('')
-            if len(parts) != 12:
+            if len(parts) != 10:
+                import pdb;pdb.set_trace()
                 continue
             windows.append(cls(*parts))
         return windows
@@ -124,32 +173,6 @@ class Window(BaseWindow):
         w.set_decorations(v)
         gtk.gdk.window_process_all_updates()
         gtk.gdk.flush()
-
-def _wm_window_role(winid):
-    out = getoutput('xprop -id %s WM_WINDOW_ROLE' % winid)
-    try:
-        _, value = out.split(' = ')
-    except ValueError:
-        # probably xprop returned an error
-        return ''
-    else:
-        return value.strip('"')
-
-def strip_prefix (prefix, word):
-    if word.startswith(prefix):
-        return word[len(prefix):]
-    return word
-
-def _wm_state (winid):
-    out = getoutput('xprop -id %s _NET_WM_STATE' % winid)
-    try:
-        _, value = out.split(' = ')
-    except ValueError:
-        # probably xprop returned an error
-        return []
-    else:
-        return [strip_prefix("_NET_WM_STATE_",s).lower()
-                for s in value.split(', ')]
 
 
 if __name__ == '__main__':
