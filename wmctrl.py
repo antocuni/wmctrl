@@ -80,9 +80,10 @@ class Window(object):
             parts = line.split(None, 9)
             parts = map(str.strip, parts)
             parts[1:7] = map(int, parts[1:7])
-            if len(parts) != 10:
-                import pdb;pdb.set_trace()
-                continue
+            if len(parts) == 9: # title is missing
+                parts.append('')
+            elif len(parts) != 10:
+                continue # something was wrong
             windows.append(cls(*parts))
         return windows
 
