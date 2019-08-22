@@ -177,6 +177,13 @@ class Window(object):
         gtk.gdk.window_process_all_updates()
         gtk.gdk.flush()
 
+    def maximize(self, verb='add'):
+        "verb can be 'add', 'remove' or 'toggle'"
+        self.set_properties([verb, 'maximized_vert', 'maximized_horz'])
+
+    def unmaximize(self):
+        self.maximize('remove')
+
 
 @attr.s
 class Desktop(object):
