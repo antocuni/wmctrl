@@ -1,7 +1,7 @@
 import py
 import subprocess
 import time
-from wmctrl import Window
+from wmctrl import Window, Desktop
 
 class Xchild(object):
     cmd = None
@@ -107,3 +107,14 @@ def test_properties():
     assert not (get_geometry(w1) == get_geometry(w2))
     assert 'maximized_vert' in w2.wm_state
     assert 'maximized_horz' in w2.wm_state
+
+def test_Desktop_list():
+    dlist = Desktop.list()
+    assert len(dlist) >= 1
+    num_active = len([d for d in dlist if d.active])
+    assert num_active == 1
+
+def test_Desktop_active():
+    desktop = Desktop.get_active()
+    win = Window.get_active()
+    assert win.desktop == desktop.num

@@ -178,6 +178,34 @@ class Window(object):
         gtk.gdk.flush()
 
 
+@attr.s
+class Desktop(object):
+    num = attr.ib()
+    active = attr.ib()
+    name = attr.ib()
+
+    @classmethod
+    def list(cls):
+        out = getoutput('wmctrl -d')
+        desktops = []
+        for line in out.splitlines():
+            parts = line.split(None, 9)
+            parts = map(str.strip, parts)
+            num = int(parts[0])
+            active = parts[1] == '*'
+            name = parts[-1]
+            desktops.append(cls(num, active, name))
+        return desktops
+
+    @classmethod
+    def get_active(cls):
+        dlist = cls.list()
+        for d in dlist:
+            if d.active:
+                return d
+        # this should never happen, but who knows?
+        return None
+
 if __name__ == '__main__':
     for w in Window.list():
         print '{w.id:10s} {w.x:4d} {w.y:4d} {w.w:4d} {w.h:4d} {w.wm_name} - {w.wm_class} - {w.wm_window_role}'.format(w=w)
