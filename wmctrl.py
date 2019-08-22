@@ -141,6 +141,8 @@ class Window(object):
         system('wmctrl -id -a %s' % self.id)
 
     def resize_and_move(self, x=None, y=None, w=None, h=None):
+        # XXX: the "move" part doesn't really work, it is affected by this:
+        # https://askubuntu.com/questions/576604/what-causes-the-deviation-in-the-wmctrl-window-move-command
         if x is None:
             x = self.x
         if y is None:
@@ -164,9 +166,9 @@ class Window(object):
         x, y = map(int, pos.split('+'))
         self.resize_and_move(x, y, w, h)
 
-    def set_properties(self,properties):
+    def set_properties(self, properties):
         proparg = ",".join(properties)
-        system('wmctrl -i -r %s -b %s' % (self.id,proparg))
+        system('wmctrl -i -r %s -b %s' % (self.id, proparg))
 
     def set_decorations(self, v):
         import gtk.gdk
