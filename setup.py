@@ -8,7 +8,7 @@ setup(
     author_email='anto.cuni@gmail.com',
     py_modules=['wmctrl'],
     url='http://bitbucket.org/antocuni/wmctrl',
-    license='BSD',
+    license='MIT',
     description='A tool to programmatically control windows inside X',
     long_description='A tool to programmatically control windows inside X'
 )
