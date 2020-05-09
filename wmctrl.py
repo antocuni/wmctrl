@@ -1,4 +1,3 @@
-from collections import namedtuple
 import attr
 
 VERSBOSE = False
@@ -159,6 +158,14 @@ class Window(object):
 
     def move(self, x=None, y=None):
         self.resize_and_move(x=x, y=y)
+
+    def sticky(self):
+        # -2 seems to work on kde plasma, not sure about the other WMs:
+        # https://unix.stackexchange.com/questions/11893/command-to-move-a-window
+        self.move_to_destktop(-2)
+
+    def move_to_destktop(self, n):
+        system('wmctrl -i -r %s -t %s' % (self.id, n))
 
     def set_geometry(self, geometry):
         dim, pos = geometry.split('+', 1)
