@@ -3,15 +3,19 @@ import attr
 VERSBOSE = False
 
 def getoutput(s):
-    import commands
+    try:
+        from commands import getoutput
+    except ImportError:
+        from subprocess import getoutput
+
     if VERSBOSE:
-        print s
-    return commands.getoutput(s)
+        print(s)
+    return getoutput(s)
 
 def system(s):
     import os
     if VERSBOSE:
-        print s
+        print(s)
     return os.system(s)
 
 def strip_prefix (prefix, word):
@@ -77,7 +81,7 @@ class Window(object):
         windows = []
         for line in out.splitlines():
             parts = line.split(None, 9)
-            parts = map(str.strip, parts)
+            parts = list(map(str.strip, parts))
             parts[1:7] = map(int, parts[1:7])
             if len(parts) == 9: # title is missing
                 parts.append('')
@@ -204,7 +208,7 @@ class Desktop(object):
         desktops = []
         for line in out.splitlines():
             parts = line.split(None, 9)
-            parts = map(str.strip, parts)
+            parts = list(map(str.strip, parts))
             num = int(parts[0])
             active = parts[1] == '*'
             name = parts[-1]
@@ -222,6 +226,6 @@ class Desktop(object):
 
 if __name__ == '__main__':
     for w in Window.list():
-        print '{w.id:10s} {w.x:4d} {w.y:4d} {w.w:4d} {w.h:4d} {w.wm_name} - {w.wm_class} - {w.wm_window_role}'.format(w=w)
+        print('{w.id:10s} {w.x:4d} {w.y:4d} {w.w:4d} {w.h:4d} {w.wm_name} - {w.wm_class} - {w.wm_window_role}'.format(w=w))
 
     
