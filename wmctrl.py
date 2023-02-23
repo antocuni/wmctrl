@@ -96,7 +96,7 @@ class Window(object):
 
     @classmethod
     def list_names(cls):
-        return uniq([w.name_class for w in cls.list()])
+        return uniq([w.wm_name for w in cls.list()])
 
     @classmethod
     def list_roles(cls):
