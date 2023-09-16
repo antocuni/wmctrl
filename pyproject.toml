@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wmctrl"
+version = "0.4"
+description = "A tool to programmatically control windows inside X"
+authors = [{name = "Antonio Cuni", email = "anto.cuni@gmail.com"}]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=2.7"
+dependencies = ["attrs"]
+
+[project.readme]
+text = "A tool to programmatically control windows inside X"
+content-type = "text/rst"
+
+[project.urls]
+Homepage = "https://github.com/antocuni/wmctrl"
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+addopts = "-rsx --tb=short"
+testpaths = ["test"]
