@@ -23,7 +23,7 @@ jobs:
         cache: pip
         cache-dependency-path: setup.py
     - name: Install system dependencies
-      run: sudo apt-get install xvfb x11-apps
+      run: sudo apt-get install xvfb x11-apps x11-utils
     - name: Install dependencies
       run: |
         pip install pytest
