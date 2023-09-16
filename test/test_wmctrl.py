@@ -1,4 +1,4 @@
-import py
+import pytest
 import subprocess
 import time
 from wmctrl import Window, Desktop
@@ -90,7 +90,7 @@ def test_geometry():
     check_geometry('100x200+30+40')
 
 def test_geometry_negative():
-    py.test.skip('fixme')
+    pytest.skip('fixme')
     check_geometry('100x200-30-40')
 
 def test_properties():
