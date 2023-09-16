@@ -1,0 +1,32 @@
+name: Test suite
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: MatteoH2O1999/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+        allow-prereleases: true
+        cache: pip
+        cache-dependency-path: setup.py
+    - name: Install system dependencies
+      run: sudo apt-get install xvfb x11-apps x11-utils wmctrl
+    - name: Install dependencies
+      run: |
+        pip install pytest
+        pip install -e .
+    - name: Test with pytest
+      run: xvfb-run pytest

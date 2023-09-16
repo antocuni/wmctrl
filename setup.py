@@ -7,7 +7,7 @@ setup(
     author='Antonio Cuni',
     author_email='anto.cuni@gmail.com',
     py_modules=['wmctrl'],
-    install_requires=['attr'],
+    install_requires=['attrs'],
     url='https://github.com/antocuni/wmctrl',
     license='MIT',
     description='A tool to programmatically control windows inside X',
