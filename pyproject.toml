@@ -33,6 +33,9 @@ Homepage = "https://github.com/antocuni/wmctrl"
 [project.optional-dependencies]
 test = ["pytest"]
 
+[tool.setuptools]
+py-modules = ["wmctrl"]
+
 [tool.pytest.ini_options]
 addopts = "-rsx --tb=short"
 testpaths = ["test"]
