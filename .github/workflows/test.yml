@@ -23,6 +23,8 @@ jobs:
         cache: pip
         cache-dependency-path: setup.py
     - name: Install dependencies
-      run: pip install -e .[test]
+      run: |
+        pip install pytest
+        pip install -e .
     - name: Test with pytest
       run: pytest
