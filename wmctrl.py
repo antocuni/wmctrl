@@ -1,16 +1,16 @@
+from __future__ import print_function
 import attr
 
 VERSBOSE = False
 
 def getoutput(s):
     try:
-        from commands import getoutput
+        import commands as subprocess # for PY2
     except ImportError:
-        from subprocess import getoutput
-
+        import subprocess
     if VERSBOSE:
         print(s)
-    return getoutput(s)
+    return subprocess.getoutput(s)
 
 def system(s):
     import os
@@ -82,7 +82,7 @@ class Window(object):
         for line in out.splitlines():
             parts = line.split(None, 9)
             parts = list(map(str.strip, parts))
-            parts[1:7] = map(int, parts[1:7])
+            parts[1:7] = list(map(int, parts[1:7]))
             if len(parts) == 9: # title is missing
                 parts.append('')
             elif len(parts) != 10:
@@ -182,11 +182,17 @@ class Window(object):
         system('wmctrl -i -r %s -b %s' % (self.id, proparg))
 
     def set_decorations(self, v):
-        import gtk.gdk
-        w = gtk.gdk.window_foreign_new(int(self.id, 16))
-        w.set_decorations(v)
-        gtk.gdk.window_process_all_updates()
-        gtk.gdk.flush()
+        try:
+            # try to use gtk
+            import gtk.gdk
+            w = gtk.gdk.window_foreign_new(int(self.id, 16))
+            w.set_decorations(v)
+            gtk.gdk.window_process_all_updates()
+            gtk.gdk.flush()
+        except ImportError:
+            # try to use my utilty
+            op = int(bool(v)) # 1 or 0
+            system("set-x11-decorations %s %s" % (self.id, op))
 
     def maximize(self, verb='add'):
         "verb can be 'add', 'remove' or 'toggle'"
@@ -225,7 +231,13 @@ class Desktop(object):
         return None
 
 if __name__ == '__main__':
-    for w in Window.list():
-        print('{w.id:10s} {w.x:4d} {w.y:4d} {w.w:4d} {w.h:4d} {w.wm_name} - {w.wm_class} - {w.wm_window_role}'.format(w=w))
-
-    
+    class magic(object):
+        def __getattr__(self, name):
+            return name
+    windows = Window.list()
+    windows.sort(key=lambda w:w.wm_class)
+    print('{s.id:<10} {s.x:>4} {s.y:>4} {s.w:>4} {s.h:>4} '
+          '{s.class:>37} {s.role:>15} {s.name}'.format(s=magic()))
+    for w in windows:
+        print('{w.id:<10} {w.x:>4d} {w.y:>4d} {w.w:4d} {w.h:4d} '
+              '{w.wm_class:>37} {w.wm_window_role:>15} {w.wm_name}'.format(w=w))
