@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "wmctrl"
-version = "0.4"
+version = "0.5"
 description = "A tool to programmatically control windows inside X"
 authors = [{name = "Antonio Cuni", email = "anto.cuni@gmail.com"}]
 license = {text = "MIT"}
