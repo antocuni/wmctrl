@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import attr
 
 VERSBOSE = False
@@ -206,6 +208,7 @@ class Desktop(object):
     def list(cls):
         out = getoutput('wmctrl -d')
         desktops = []
+        print("output:", out)
         for line in out.splitlines():
             parts = line.split(None, 9)
             parts = list(map(str.strip, parts))
@@ -228,4 +231,4 @@ if __name__ == '__main__':
     for w in Window.list():
         print('{w.id:10s} {w.x:4d} {w.y:4d} {w.w:4d} {w.h:4d} {w.wm_name} - {w.wm_class} - {w.wm_window_role}'.format(w=w))
 
-    
+
