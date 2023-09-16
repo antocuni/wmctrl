@@ -25,7 +25,7 @@ dependencies = ["attrs"]
 
 [project.readme]
 text = "A tool to programmatically control windows inside X"
-content-type = "text/rst"
+content-type = "text/x-rst"
 
 [project.urls]
 Homepage = "https://github.com/antocuni/wmctrl"
