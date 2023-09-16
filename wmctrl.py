@@ -1,24 +1,15 @@
 from __future__ import print_function
 
+import subprocess
+import sys
+
 import attr
 
-VERSBOSE = False
+if sys.version_info < (3, 0):
+    from commands import getoutput
+else:
+    from subprocess import getoutput
 
-def getoutput(s):
-    try:
-        from commands import getoutput
-    except ImportError:
-        from subprocess import getoutput
-
-    if VERSBOSE:
-        print(s)
-    return getoutput(s)
-
-def system(s):
-    import os
-    if VERSBOSE:
-        print(s)
-    return os.system(s)
 
 def strip_prefix (prefix, word):
     if word.startswith(prefix):
@@ -81,6 +72,7 @@ class Window(object):
     def list(cls):
         out = getoutput('wmctrl -l -G -p -x')
         windows = []
+        print("output:", out)
         for line in out.splitlines():
             parts = line.split(None, 9)
             parts = list(map(str.strip, parts))
@@ -143,7 +135,7 @@ class Window(object):
         return lst[0]
 
     def activate(self):
-        system('wmctrl -id -a %s' % self.id)
+        subprocess.check_call(['wmctrl', '-id', '-a', self.id])
 
     def resize_and_move(self, x=None, y=None, w=None, h=None):
         # XXX: the "move" part doesn't really work, it is affected by this:
@@ -157,7 +149,7 @@ class Window(object):
         if h is None:
             h = self.h
         mvarg = '0,%d,%d,%d,%d' % (x, y, w, h)
-        system('wmctrl -i -r %s -e %s' % (self.id, mvarg))
+        subprocess.check_call(['wmctrl', '-i', '-r', self.id, '-e', mvarg])
 
     def resize(self, w=None, h=None):
         self.resize_and_move(w=w, h=h)
@@ -171,7 +163,7 @@ class Window(object):
         self.move_to_destktop(-2)
 
     def move_to_destktop(self, n):
-        system('wmctrl -i -r %s -t %s' % (self.id, n))
+        subprocess.check_call(['wmctrl', '-i', '-r', self.id, '-t', n])
 
     def set_geometry(self, geometry):
         dim, pos = geometry.split('+', 1)
@@ -181,7 +173,7 @@ class Window(object):
 
     def set_properties(self, properties):
         proparg = ",".join(properties)
-        system('wmctrl -i -r %s -b %s' % (self.id, proparg))
+        subprocess.check_call(['wmctrl', '-i', '-r',  self.id, '-b', proparg])
 
     def set_decorations(self, v):
         import gtk.gdk
