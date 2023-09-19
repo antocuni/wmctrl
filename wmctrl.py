@@ -129,9 +129,8 @@ class Window(object):
     @classmethod
     def get_active(cls):
         out = getoutput("xprop -root _NET_ACTIVE_WINDOW")
-        parts = out.split()
         try:
-            id = int(parts[-1], 16)
+            id = int(out.split("# ")[1].split(", ")[0], 16)
         except ValueError:
             return None
         lst = cls.by_id(id)
