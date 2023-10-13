@@ -207,9 +207,12 @@ class Desktop(object):
     num = attr.ib()
     active = attr.ib()
     name = attr.ib()
+    dg = attr.ib() # Desktop Geometry
+    wa = attr.ib() # WorkArea geometry
 
     @classmethod
     def list(cls):
+        wh = lambda x: tuple(int(y) for y in x.split('x'))
         out = getoutput('wmctrl -d')
         desktops = []
         for line in out.splitlines():
@@ -218,7 +221,8 @@ class Desktop(object):
             num = int(parts[0])
             active = parts[1] == '*'
             name = parts[-1]
-            desktops.append(cls(num, active, name))
+            dg, wa = wh(parts[3]), wh(parts[-2])
+            desktops.append(cls(num, active, name, dg, wa))
         return desktops
 
     @classmethod
